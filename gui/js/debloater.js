@@ -7,6 +7,13 @@ import { showConfirmModal } from "./modals.js";
 let fullAppListCache = [];
 const selectedPackages = new Set();
 let activeFilters = { safety: "all", oem: "all", search: "" };
+const allowedSafetyClasses = new Set([
+  "advanced",
+  "expert",
+  "recommended",
+  "unsafe",
+  "unknown",
+]);
 const escapeHtml = (value = "") =>
   String(value).replace(
     /[&<>"']/g,
@@ -169,7 +176,7 @@ function renderAppList() {
   listEl.innerHTML = filteredApps
     .map((app) => {
       const isSelected = selectedPackages.has(app.id);
-      const safetyClass = /^[a-z0-9_-]+$/i.test(app.removal)
+      const safetyClass = allowedSafetyClasses.has(app.removal)
         ? app.removal
         : "unknown";
       const escapedPackage = escapeHtml(app.id);

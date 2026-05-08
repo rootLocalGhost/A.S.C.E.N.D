@@ -14,12 +14,17 @@ const path = {
 };
 
 const shellQuote = (value) =>
-  `"${String(value).replace(/(["\\$`])/g, "\\$1")}"`;
+  `"${String(value)
+    .replace(/[\n\r]/g, " ")
+    .replace(/(["\\$`])/g, "\\$1")}"`;
 
 const isValidPathSegment = (name) =>
   typeof name === "string" &&
   name.trim().length > 0 &&
+  name.trim() !== "." &&
+  name.trim() !== ".." &&
   !name.includes("/") &&
+  !name.includes("\\") &&
   !name.includes("\0");
 
 export function initFileExplorer() {
