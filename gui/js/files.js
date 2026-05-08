@@ -13,17 +13,21 @@ const path = {
       .replace(/\/+/g, "/") || "/",
 };
 
-const shellQuote = (value) =>
+const posixShellQuote = (value) =>
   `'${String(value).replace(/[\n\r]/g, " ").replace(/'/g, `'\\''`)}'`;
 
-const isValidPathSegment = (name) =>
-  typeof name === "string" &&
-  name.trim().length > 0 &&
-  name.trim() !== "." &&
-  name.trim() !== ".." &&
-  !name.includes("/") &&
-  !name.includes("\\") &&
-  !name.includes("\0");
+const isValidPathSegment = (name) => {
+  if (typeof name !== "string") return false;
+  const trimmed = name.trim();
+  return (
+    trimmed.length > 0 &&
+    trimmed !== "." &&
+    trimmed !== ".." &&
+    !trimmed.includes("/") &&
+    !trimmed.includes("\\") &&
+    !trimmed.includes("\0")
+  );
+};
 
 export function initFileExplorer() {
   const container = $("device-file-list-container");
@@ -90,7 +94,12 @@ export function listDeviceFiles(dirPath) {
   state.currentDevicePath = dirPath;
   state.selectedFileItem = null;
   renderBreadcrumbs();
-  runCommand("adb", ["shell", `ls -F ${shellQuote(dirPath)}`], false, "device-ls");
+  runCommand(
+    "adb",
+    ["shell", `ls -F ${posixShellQuote(dirPath)}`],
+    false,
+    "device-ls"
+  );
 }
 
 export function parseAndRenderDeviceFiles(data) {
@@ -227,7 +236,7 @@ async function handleContextMenuAction(e) {
       const newPath = path.join(state.currentDevicePath, newName);
       runCommand("adb", [
         "shell",
-        `mv ${shellQuote(targetPath)} ${shellQuote(newPath)}`,
+        `mv ${posixShellQuote(targetPath)} ${posixShellQuote(newPath)}`,
       ]);
       setTimeout(() => listDeviceFiles(state.currentDevicePath), 500);
     }
@@ -237,7 +246,7 @@ async function handleContextMenuAction(e) {
         `Are you sure you want to permanently delete "${item.name}"?`
       )
     ) {
-      runCommand("adb", ["shell", `rm -rf ${shellQuote(targetPath)}`]);
+      runCommand("adb", ["shell", `rm -rf ${posixShellQuote(targetPath)}`]);
       setTimeout(() => listDeviceFiles(state.currentDevicePath), 500);
     }
   } else if (action === "new-folder") {
@@ -251,7 +260,7 @@ async function handleContextMenuAction(e) {
         return;
       }
       const newPath = path.join(state.currentDevicePath, folderName);
-      runCommand("adb", ["shell", `mkdir ${shellQuote(newPath)}`]);
+      runCommand("adb", ["shell", `mkdir ${posixShellQuote(newPath)}`]);
       setTimeout(() => listDeviceFiles(state.currentDevicePath), 500);
     }
   }
