@@ -14,9 +14,7 @@ const path = {
 };
 
 const shellQuote = (value) =>
-  `"${String(value)
-    .replace(/[\n\r]/g, " ")
-    .replace(/(["\\$`])/g, "\\$1")}"`;
+  `'${String(value).replace(/[\n\r]/g, " ").replace(/'/g, `'\\''`)}'`;
 
 const isValidPathSegment = (name) =>
   typeof name === "string" &&

@@ -34,6 +34,10 @@ export function initDeviceControls() {
       remotePath.split("/").pop()
     );
     if (!destination) return;
+    if (/[\0\r\n]/.test(destination)) {
+      log("Invalid destination path for screenshot.", "ERROR");
+      return;
+    }
 
     log("Taking screenshot...", "INFO");
     runCommand("adb", ["shell", "screencap", "-p", remotePath]);
