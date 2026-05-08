@@ -25,6 +25,7 @@ function initWindowControls() {
 function initSidebar() {
   const sidebar = $("sidebar");
   const toggleBtn = $("sidebar-toggle-btn");
+  if (!sidebar || !toggleBtn) return;
 
   toggleBtn.addEventListener("click", (e) => {
     e.stopPropagation();

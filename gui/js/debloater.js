@@ -7,6 +7,20 @@ import { showConfirmModal } from "./modals.js";
 let fullAppListCache = [];
 const selectedPackages = new Set();
 let activeFilters = { safety: "all", oem: "all", search: "" };
+const escapeHtml = (value = "") =>
+  String(value).replace(
+    /[&<>"']/g,
+    (char) =>
+      (
+        {
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;",
+        }[char] || char
+      )
+  );
 
 export function initDebloater() {
   selAll(".app-filter-btn").forEach((btn) => {
@@ -155,30 +169,36 @@ function renderAppList() {
   listEl.innerHTML = filteredApps
     .map((app) => {
       const isSelected = selectedPackages.has(app.id);
+      const safetyClass = /^[a-z0-9_-]+$/i.test(app.removal)
+        ? app.removal
+        : "unknown";
+      const escapedPackage = escapeHtml(app.id);
+      const escapedList = escapeHtml(app.list);
+      const escapedSafety = escapeHtml(app.removal);
+      const escapedDescription = escapeHtml(app.description).replace(
+        /\n/g,
+        "<br>"
+      );
+      const escapedLabels = app.labels.map(escapeHtml).join(", ");
+      const escapedDependencies = app.dependencies.map(escapeHtml).join(", ");
+      const escapedNeededBy = app.neededBy.map(escapeHtml).join(", ");
       return `
       <div class="app-list-item ${
         isSelected ? "selected" : ""
-      }" data-package-name="${app.id}">
+      }" data-package-name="${escapedPackage}">
         <div class="app-item-header">
           <div class="app-checkbox"><i class="fa-solid fa-check"></i></div>
           <div class="app-info">
-            <div class="app-info-pkg" title="${app.id}">${app.id}</div>
-            <div class="app-info-list">${app.list}</div>
+            <div class="app-info-pkg" title="${escapedPackage}">${escapedPackage}</div>
+            <div class="app-info-list">${escapedList}</div>
           </div>
-          <div class="app-safety-badge ${app.removal}">${app.removal}</div>
+          <div class="app-safety-badge ${safetyClass}">${escapedSafety}</div>
         </div>
-        <div class="app-details-desc">${app.description.replace(
-          /\n/g,
-          "<br>"
-        )}</div>
+        <div class="app-details-desc">${escapedDescription}</div>
         <div class="app-details-grid">
-            <strong>Labels:</strong>       <span>${app.labels.join(", ")}</span>
-            <strong>Dependencies:</strong> <span>${app.dependencies.join(
-              ", "
-            )}</span>
-            <strong>Needed By:</strong>     <span>${app.neededBy.join(
-              ", "
-            )}</span>
+            <strong>Labels:</strong>       <span>${escapedLabels}</span>
+            <strong>Dependencies:</strong> <span>${escapedDependencies}</span>
+            <strong>Needed By:</strong>     <span>${escapedNeededBy}</span>
         </div>
       </div>
     `;

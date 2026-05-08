@@ -22,7 +22,7 @@ export function initDeviceControls() {
     );
   });
   $("connect-ip-btn")?.addEventListener("click", () => {
-    const ip = $("device-ip").value;
+    const ip = $("device-ip").value.trim();
     if (ip) {
       runCommand("adb", ["connect", `${ip}:5555`]);
     }
@@ -39,7 +39,7 @@ export function initDeviceControls() {
     runCommand("adb", ["shell", "screencap", "-p", remotePath]);
     setTimeout(() => {
       log("Downloading screenshot...", "INFO");
-      runCommand("adb", ["pull", `"${remotePath}"`, `"${destination}"`]);
+      runCommand("adb", ["pull", remotePath, destination]);
       setTimeout(() => {
         runCommand("adb", ["shell", "rm", remotePath], true);
         log(`Screenshot saved to ${destination}`, "SUCCESS");
@@ -108,24 +108,27 @@ export function initDeviceControls() {
     "Active Services": "dumpsys activity services",
     "Get All Props": "getprop",
   };
-  Object.entries(quickCmds).forEach(([name, cmd]) => {
-    const item = document.createElement("div");
-    item.className = "dropdown-item";
-    item.textContent = name;
-    item.addEventListener("click", () => {
-      quickCmdText.textContent = name;
-      quickCmdDropdown.dataset.value = cmd;
+  if (quickCmdDropdown && quickCmdMenu && quickCmdText) {
+    Object.entries(quickCmds).forEach(([name, cmd]) => {
+      const item = document.createElement("div");
+      item.className = "dropdown-item";
+      item.textContent = name;
+      item.addEventListener("click", () => {
+        quickCmdText.textContent = name;
+        quickCmdDropdown.dataset.value = cmd;
+      });
+      quickCmdMenu.appendChild(item);
     });
-    quickCmdMenu?.appendChild(item);
-  });
-  quickCmdDropdown
-    ?.querySelector(".dropdown-selected")
-    .addEventListener("click", (e) => {
-      e.stopPropagation();
-      quickCmdMenu.classList.toggle("open");
-    });
+
+    quickCmdDropdown
+      .querySelector(".dropdown-selected")
+      ?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        quickCmdMenu.classList.toggle("open");
+      });
+  }
   $("run-quick-command")?.addEventListener("click", () => {
-    const cmd = quickCmdDropdown.dataset.value;
+    const cmd = quickCmdDropdown?.dataset.value;
     if (cmd) runCommand("adb", ["shell", ...cmd.split(" ")], false, "dumpsys");
   });
 }

@@ -1,7 +1,7 @@
 // files.js
 import { state } from "./state.js";
 import { runCommand } from "./adb.js";
-import { $ } from "./utils.js";
+import { $, log } from "./utils.js";
 import { showInputModal, showConfirmModal } from "./modals.js";
 
 const path = {
@@ -12,6 +12,15 @@ const path = {
       .join("/")
       .replace(/\/+/g, "/") || "/",
 };
+
+const shellQuote = (value) =>
+  `"${String(value).replace(/(["\\$`])/g, "\\$1")}"`;
+
+const isValidPathSegment = (name) =>
+  typeof name === "string" &&
+  name.trim().length > 0 &&
+  !name.includes("/") &&
+  !name.includes("\0");
 
 export function initFileExplorer() {
   const container = $("device-file-list-container");
@@ -78,7 +87,7 @@ export function listDeviceFiles(dirPath) {
   state.currentDevicePath = dirPath;
   state.selectedFileItem = null;
   renderBreadcrumbs();
-  runCommand("adb", ["shell", `ls -F "${dirPath}"`], false, "device-ls");
+  runCommand("adb", ["shell", `ls -F ${shellQuote(dirPath)}`], false, "device-ls");
 }
 
 export function parseAndRenderDeviceFiles(data) {
@@ -200,8 +209,7 @@ async function handleContextMenuAction(e) {
     listDeviceFiles(targetPath);
   } else if (action === "download" && item && !item.isDirectory) {
     const destination = await window.electronAPI.saveFile(item.name);
-    if (destination)
-      runCommand("adb", ["pull", `"${targetPath}"`, `"${destination}"`]);
+    if (destination) runCommand("adb", ["pull", targetPath, destination]);
   } else if (action === "rename" && item) {
     const newName = await showInputModal(
       "Rename",
@@ -209,8 +217,15 @@ async function handleContextMenuAction(e) {
       item.name
     );
     if (newName && newName !== item.name) {
+      if (!isValidPathSegment(newName)) {
+        log("Invalid file/folder name.", "ERROR");
+        return;
+      }
       const newPath = path.join(state.currentDevicePath, newName);
-      runCommand("adb", ["shell", `mv "${targetPath}" "${newPath}"`]);
+      runCommand("adb", [
+        "shell",
+        `mv ${shellQuote(targetPath)} ${shellQuote(newPath)}`,
+      ]);
       setTimeout(() => listDeviceFiles(state.currentDevicePath), 500);
     }
   } else if (action === "delete" && item) {
@@ -219,7 +234,7 @@ async function handleContextMenuAction(e) {
         `Are you sure you want to permanently delete "${item.name}"?`
       )
     ) {
-      runCommand("adb", ["shell", `rm -rf "${targetPath}"`]);
+      runCommand("adb", ["shell", `rm -rf ${shellQuote(targetPath)}`]);
       setTimeout(() => listDeviceFiles(state.currentDevicePath), 500);
     }
   } else if (action === "new-folder") {
@@ -228,8 +243,12 @@ async function handleContextMenuAction(e) {
       "Enter new folder name:"
     );
     if (folderName) {
+      if (!isValidPathSegment(folderName)) {
+        log("Invalid folder name.", "ERROR");
+        return;
+      }
       const newPath = path.join(state.currentDevicePath, folderName);
-      runCommand("adb", ["shell", `mkdir "${newPath}"`]);
+      runCommand("adb", ["shell", `mkdir ${shellQuote(newPath)}`]);
       setTimeout(() => listDeviceFiles(state.currentDevicePath), 500);
     }
   }

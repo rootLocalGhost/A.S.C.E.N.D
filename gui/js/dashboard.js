@@ -141,8 +141,8 @@ export function updateDashboardData(data, commandKey) {
       $("info-resolution").textContent =
         (data.match(/Physical size: ([\dx]+)/) || [])[1] || "N/A";
     } else if (commandKey === "dashboard-screenDensity") {
-      $("info-density").textContent =
-        `${(data.match(/Physical density: (\d+)/) || [])[1]} dpi` || "N/A";
+      const density = (data.match(/Physical density: (\d+)/) || [])[1];
+      $("info-density").textContent = density ? `${density} dpi` : "N/A";
     }
   } catch (e) {
     log(
