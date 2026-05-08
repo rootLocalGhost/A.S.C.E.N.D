@@ -34,7 +34,7 @@ export function initDeviceControls() {
       remotePath.split("/").pop()
     );
     if (!destination) return;
-    if (/[\0\r\n]/.test(destination)) {
+    if (/[\0\r\n`$<>|;&"]/.test(destination)) {
       log("Invalid destination path for screenshot.", "ERROR");
       return;
     }

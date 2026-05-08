@@ -14,7 +14,9 @@ const path = {
 };
 
 const posixShellQuote = (value) =>
-  `'${String(value).replace(/[\n\r]/g, " ").replace(/'/g, `'\\''`)}'`;
+  `'${String(value).replace(/'/g, `'\\''`)}'`;
+
+const hasInvalidShellChars = (value) => /[\0\r\n]/.test(String(value));
 
 const isValidPathSegment = (name) => {
   if (typeof name !== "string") return false;
@@ -89,6 +91,10 @@ export function listDeviceFiles(dirPath) {
   if (!state.currentDevice) {
     $("device-file-list-container").innerHTML =
       '<div class="app-list-placeholder">Please select a device.</div>';
+    return;
+  }
+  if (hasInvalidShellChars(dirPath)) {
+    log("Invalid device path.", "ERROR");
     return;
   }
   state.currentDevicePath = dirPath;
@@ -216,6 +222,10 @@ async function handleContextMenuAction(e) {
   const targetPath = item
     ? path.join(state.currentDevicePath, item.name)
     : state.currentDevicePath;
+  if (hasInvalidShellChars(targetPath)) {
+    log("Invalid target path.", "ERROR");
+    return;
+  }
 
   if (action === "open" && item?.isDirectory) {
     listDeviceFiles(targetPath);
