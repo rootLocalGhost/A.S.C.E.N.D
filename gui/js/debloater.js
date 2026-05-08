@@ -1,7 +1,7 @@
 // debloater.js
 import { state } from "./state.js";
 import { runCommand } from "./adb.js";
-import { $, sel, selAll } from "./utils.js";
+import { $, sel, selAll, escapeHtml } from "./utils.js";
 import { showConfirmModal } from "./modals.js";
 
 let fullAppListCache = [];
@@ -14,21 +14,6 @@ const allowedSafetyClasses = new Set([
   "unsafe",
   "unknown",
 ]);
-const escapeHtml = (value = "") =>
-  String(value).replace(
-    /[&<>"']/g,
-    (char) =>
-      (
-        {
-          "&": "&amp;",
-          "<": "&lt;",
-          ">": "&gt;",
-          '"': "&quot;",
-          "'": "&#39;",
-        }[char] || char
-      )
-  );
-
 export function initDebloater() {
   selAll(".app-filter-btn").forEach((btn) => {
     btn.addEventListener("click", () => {

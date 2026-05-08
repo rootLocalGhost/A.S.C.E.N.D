@@ -1,7 +1,7 @@
 // files.js
 import { state } from "./state.js";
 import { runCommand } from "./adb.js";
-import { $, log } from "./utils.js";
+import { $, hasControlChars, log } from "./utils.js";
 import { showInputModal, showConfirmModal } from "./modals.js";
 
 const path = {
@@ -15,8 +15,6 @@ const path = {
 
 const posixShellQuote = (value) =>
   `'${String(value).replace(/'/g, `'\\''`)}'`;
-
-const hasInvalidShellChars = (value) => /[\0\r\n]/.test(String(value));
 
 const isValidPathSegment = (name) => {
   if (typeof name !== "string") return false;
@@ -93,7 +91,7 @@ export function listDeviceFiles(dirPath) {
       '<div class="app-list-placeholder">Please select a device.</div>';
     return;
   }
-  if (hasInvalidShellChars(dirPath)) {
+  if (hasControlChars(dirPath)) {
     log("Invalid device path.", "ERROR");
     return;
   }
@@ -222,7 +220,7 @@ async function handleContextMenuAction(e) {
   const targetPath = item
     ? path.join(state.currentDevicePath, item.name)
     : state.currentDevicePath;
-  if (hasInvalidShellChars(targetPath)) {
+  if (hasControlChars(targetPath)) {
     log("Invalid target path.", "ERROR");
     return;
   }

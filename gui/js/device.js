@@ -1,7 +1,7 @@
 // device.js
 import { state } from "./state.js";
 import { runCommand } from "./adb.js";
-import { $, selAll, log } from "./utils.js";
+import { $, selAll, log, hasControlChars } from "./utils.js";
 import { showConfirmModal } from "./modals.js";
 
 export function initDeviceControls() {
@@ -34,7 +34,7 @@ export function initDeviceControls() {
       remotePath.split("/").pop()
     );
     if (!destination) return;
-    if (/[\0\r\n`$<>|;&"]/.test(destination)) {
+    if (hasControlChars(destination) || /[`$<>|;&"]/.test(destination)) {
       log("Invalid destination path for screenshot.", "ERROR");
       return;
     }
