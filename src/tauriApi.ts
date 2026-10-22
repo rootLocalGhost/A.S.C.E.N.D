@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
-import { save } from "@tauri-apps/plugin-dialog";
+import { open, save } from "@tauri-apps/plugin-dialog";
 
 export async function executeCommand(
   command: string,
@@ -21,5 +21,14 @@ export async function saveFileDialog(defaultName: string): Promise<string | null
   const result = await save({
     defaultPath: defaultName,
   });
+  return result;
+}
+
+export async function openFileDialog(): Promise<string | null> {
+  const result = await open({
+    multiple: false,
+    directory: false,
+  });
+  if (Array.isArray(result)) return result[0] || null;
   return result;
 }

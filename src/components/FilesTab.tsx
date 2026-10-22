@@ -7,8 +7,9 @@ import {
   onMount,
   onCleanup,
 } from "solid-js";
-import { state, setState, runCommand } from "../stateStore";
-import { saveFileDialog } from "../tauriApi";
+import { state, setState, runCommand, log } from "../stateStore";
+import { saveFileDialog, openFileDialog } from "../tauriApi";
+import { joinPath, escapeShellPath } from "../utils";
 
 interface FilesTabProps {
   onShowInput: (
@@ -23,13 +24,6 @@ export interface FileItem {
   name: string;
   isDirectory: boolean;
 }
-
-const joinPath = (...args: string[]) =>
-  args
-    .map((arg) => arg.replace(/\/$/, ""))
-    .filter(Boolean)
-    .join("/")
-    .replace(/\/+/g, "/") || "/";
 
 export const FilesTab: Component<FilesTabProps> = (props) => {
   const [files, setFiles] = createSignal<FileItem[]>([]);
@@ -48,9 +42,10 @@ export const FilesTab: Component<FilesTabProps> = (props) => {
     setState("currentDevicePath", dirPath);
     setSelectedFile(null);
 
+    const safeDirPath = escapeShellPath(dirPath);
     const res = await runCommand(
       "adb",
-      ["shell", `ls -F "${dirPath}"`],
+      ["shell", `ls -F '${safeDirPath}'`],
       false,
       "device-ls"
     );
@@ -138,6 +133,13 @@ export const FilesTab: Component<FilesTabProps> = (props) => {
       if (destination) {
         await runCommand("adb", ["pull", targetPath, destination]);
       }
+    } else if (action === "upload") {
+      const sourceFile = await openFileDialog();
+      if (sourceFile) {
+        log(`Uploading ${sourceFile} to ${currentPath}...`, "INFO");
+        await runCommand("adb", ["push", sourceFile, currentPath]);
+        await listFiles(currentPath);
+      }
     } else if (action === "rename" && target) {
       const newName = await props.onShowInput(
         "Rename",
@@ -146,7 +148,9 @@ export const FilesTab: Component<FilesTabProps> = (props) => {
       );
       if (newName && newName !== target.name) {
         const newPath = joinPath(currentPath, newName);
-        await runCommand("adb", ["shell", `mv "${targetPath}" "${newPath}"`]);
+        const safeOld = escapeShellPath(targetPath);
+        const safeNew = escapeShellPath(newPath);
+        await runCommand("adb", ["shell", `mv '${safeOld}' '${safeNew}'`]);
         await listFiles(currentPath);
       }
     } else if (action === "delete" && target) {
@@ -155,7 +159,8 @@ export const FilesTab: Component<FilesTabProps> = (props) => {
           `Are you sure you want to permanently delete "${target.name}"?`
         )
       ) {
-        await runCommand("adb", ["shell", `rm -rf "${targetPath}"`]);
+        const safeTarget = escapeShellPath(targetPath);
+        await runCommand("adb", ["shell", `rm -rf '${safeTarget}'`]);
         await listFiles(currentPath);
       }
     } else if (action === "new-folder") {
@@ -165,7 +170,8 @@ export const FilesTab: Component<FilesTabProps> = (props) => {
       );
       if (folderName) {
         const newPath = joinPath(currentPath, folderName);
-        await runCommand("adb", ["shell", `mkdir "${newPath}"`]);
+        const safeNewPath = escapeShellPath(newPath);
+        await runCommand("adb", ["shell", `mkdir -p '${safeNewPath}'`]);
         await listFiles(currentPath);
       }
     }
@@ -315,6 +321,12 @@ export const FilesTab: Component<FilesTabProps> = (props) => {
               </div>
             </Show>
             <div class="context-item-separator" />
+            <div
+              class="context-item"
+              onClick={() => handleContextAction("upload")}
+            >
+              <i class="fa-solid fa-upload fa-fw" /> Upload File
+            </div>
             <div
               class="context-item"
               onClick={() => handleContextAction("new-folder")}
