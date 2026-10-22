@@ -1,5 +1,6 @@
 import { createStore } from "solid-js/store";
 import { executeCommand } from "./tauriApi";
+import { isAdbDeviceCommand } from "./utils";
 
 export interface LogEntry {
   time: string;
@@ -40,15 +41,7 @@ export async function runCommand(
   isBackgroundTask = false,
   commandKey: string | null = null
 ): Promise<[string, string] | null> {
-  const isDeviceCommand = [
-    "shell",
-    "pull",
-    "push",
-    "tcpip",
-    "reboot",
-    "screencap",
-    "logcat",
-  ].some((cmd) => args.includes(cmd));
+  const isDeviceCommand = command === "adb" && isAdbDeviceCommand(args);
 
   if (isDeviceCommand && !state.currentDevice) {
     log("No device selected. Command aborted.", "ERROR");

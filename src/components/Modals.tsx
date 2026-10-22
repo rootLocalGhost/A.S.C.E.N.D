@@ -20,6 +20,27 @@ interface ModalsProps {
 
 export const Modals: Component<ModalsProps> = (props) => {
   const [inputValue, setInputValue] = createSignal("");
+  const [logFilter, setLogFilter] = createSignal("");
+  const [copied, setCopied] = createSignal(false);
+
+  const filteredLogs = () => {
+    if (!logFilter().trim()) return state.logs;
+    const term = logFilter().toLowerCase();
+    return state.logs.filter(
+      (entry) =>
+        entry.message.toLowerCase().includes(term) ||
+        entry.type.toLowerCase().includes(term)
+    );
+  };
+
+  const copyLogs = () => {
+    const text = state.logs
+      .map((entry) => `[${entry.time}] [${entry.type}] ${entry.message}`)
+      .join("\n");
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <>
@@ -31,21 +52,35 @@ export const Modals: Component<ModalsProps> = (props) => {
         <div class="modal-window">
           <div class="modal-header">
             <h2>
-              <i class="fa-solid fa-book" /> Settings & Logs
+              <i class="fa-solid fa-book" /> Application Logs & Activity
             </h2>
-            <button
-              class="modal-close-btn"
-              onClick={props.onCloseSettings}
-            >
+            <button class="modal-close-btn" onClick={props.onCloseSettings}>
               <i class="fa-solid fa-times" />
             </button>
           </div>
           <div class="modal-content">
+            <div class="log-toolbar">
+              <input
+                type="text"
+                placeholder="Filter logs..."
+                value={logFilter()}
+                onInput={(e) => setLogFilter(e.currentTarget.value)}
+              />
+              <button class="btn-secondary" onClick={copyLogs}>
+                <i class={`fa-solid ${copied() ? "fa-check" : "fa-copy"}`} />
+                {copied() ? "Copied!" : "Copy Logs"}
+              </button>
+            </div>
+
             <div id="session-log" class="log-view">
-              <For each={state.logs}>
+              <For each={filteredLogs()}>
                 {(entry) => (
                   <div class={`log-entry log-${entry.type.toLowerCase()}`}>
-                    [{entry.time}] [{entry.type}] {entry.message}
+                    <span class="log-time">[{entry.time}]</span>{" "}
+                    <span class={`log-badge badge-${entry.type.toLowerCase()}`}>
+                      {entry.type}
+                    </span>{" "}
+                    <span class="log-msg">{entry.message}</span>
                   </div>
                 )}
               </For>

@@ -127,3 +127,29 @@ fn main() {
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_debloat_item_deserialization() {
+        let json_data = r#"[
+            {
+                "id": "com.example.app",
+                "name": "Example App",
+                "list": "OEM",
+                "description": "An example app description.",
+                "safety": "Recommended",
+                "removal": "Recommended"
+            }
+        ]"#;
+
+        let items: Result<Vec<DebloatItem>, _> = serde_json::from_str(json_data);
+        assert!(items.is_ok());
+        let items = items.unwrap();
+        assert_eq!(items.len(), 1);
+        assert_eq!(items[0].id, "com.example.app");
+        assert_eq!(items[0].name.as_deref(), Some("Example App"));
+    }
+}
