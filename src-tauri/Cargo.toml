@@ -1,0 +1,23 @@
+[package]
+name = "ascend"
+version = "1.3.0"
+description = "Android System Control & ENhanced Debloater"
+authors = ["Md. Siam Mia"]
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "2.0.5", features = [] }
+
+[dependencies]
+tauri = { version = "2.2.0", features = [] }
+tauri-plugin-dialog = "2.2.0"
+tauri-plugin-opener = "2.2.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true

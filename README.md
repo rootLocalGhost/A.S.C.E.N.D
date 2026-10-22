@@ -9,7 +9,7 @@
 
 </div>
 
-**A powerful, elegant desktop application for taking complete control of your Android device.**
+**A powerful, elegant desktop application built with Rust, Tauri v2, SolidJS, TypeScript, and Bun for taking complete control of your Android device.**
 
 A.S.C.E.N.D. is a professional tool that wraps the power of ADB (Android Debug Bridge) and Scrcpy into a beautiful and intuitive graphical interface. Stop memorizing cryptic commands and start managing your device with the efficiency and style it deserves.
 
@@ -34,44 +34,12 @@ A.S.C.E.N.D. is a professional tool that wraps the power of ADB (Android Debug B
 
 ---
 
-## 🚦 Prerequisites
-
-To allow A.S.C.E.N.D. to connect to your device, you must enable USB Debugging.
-
-1. **Enable Developer Options:**
-
-   - Go to `Settings` > `About phone`.
-   - Tap on `Build number` 7 times until you see a "You are now a developer!" message.
-
-2. **Enable USB Debugging:**
-
-   - Go to `Settings` > `System` > `Developer options`.
-   - Scroll down and enable the `USB debugging` toggle.
-
-3. **Authorize Your Computer:**
-   - Connect your device to your computer via USB.
-   - A prompt will appear on your device asking to "Allow USB debugging?".
-   - Check the "Always allow from this computer" box and tap "Allow".
-
----
-
-## 📦 Installation
-
-Get up and running in seconds.
-
-1. Navigate to the **[Releases Page](https://github.com/rootLocalGhost/A.S.C.E.N.D/releases)**.
-2. Download the latest `A.S.C.E.N.D-Setup-x.x.x.exe` installer.
-3. Run the installer and follow the on-screen instructions.
-
----
-
 ## 🛠️ Development & Building from Source
-
-Want to contribute or build your own version?
 
 ### Requirements
 
-- [Node.js](https://nodejs.org/) (which includes `npm`)
+- [Rust](https://www.rust-lang.org/)
+- [Bun](https://bun.sh/)
 
 ### Steps
 
@@ -83,28 +51,14 @@ git clone https://github.com/rootLocalGhost/A.S.C.E.N.D.git
 cd A.S.C.E.N.D
 
 # 3. Install dependencies
-npm install
+bun install
 
-# 4. Run the app in development mode (with DevTools)
-npm start
+# 4. Run the app in development mode
+bun tauri dev
 
-# 5. Build the distributable installer
-npm run build
+# 5. Build the distributable executable and installer
+bun tauri build
 ```
-
-The packaged application will be located in the `dist` directory.
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! If you have an idea for a new feature or have found a bug, please feel free to:
-
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/YourAwesomeFeature`).
-3. Commit your changes (`git commit -m 'Add some AwesomeFeature'`).
-4. Push to the branch (`git push origin feature/YourAwesomeFeature`).
-5. Open a Pull Request.
 
 ---
 
