@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="330 342 364 308" width="100%" height="100%">
+  <defs>
+    <!-- Glow filter for pulsing circuits and nodes -->
+    <filter id="circuit-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <style>
+    /* Static layout baseline */
+    .base-path {
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* Ambient pulse on the primary nodes */
+    .pulse-node {
+      transform-origin: center;
+      animation: node-flash 2.4s ease-in-out infinite;
+    }
+    .node-delay-1 { animation-delay: 0.4s; }
+    .node-delay-2 { animation-delay: 0.8s; }
+    .node-delay-3 { animation-delay: 1.2s; }
+
+    /* Animated signal pulses running through the traces */
+    .circuit-signal {
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 24 180;
+      animation: signal-travel 2.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+    .signal-reverse {
+      animation: signal-travel-rev 2.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+    .signal-delay-1 { animation-delay: 0.6s; }
+    .signal-delay-2 { animation-delay: 1.1s; }
+
+    /* Keyframes */
+    @keyframes signal-travel {
+      0% { stroke-dashoffset: 204; opacity: 0; }
+      15% { opacity: 1; }
+      85% { opacity: 1; }
+      100% { stroke-dashoffset: 0; opacity: 0; }
+    }
+
+    @keyframes signal-travel-rev {
+      0% { stroke-dashoffset: 0; opacity: 0; }
+      15% { opacity: 1; }
+      85% { opacity: 1; }
+      100% { stroke-dashoffset: 204; opacity: 0; }
+    }
+
+    @keyframes node-flash {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 0.65;
+      }
+      50% {
+        transform: scale(1.35);
+        opacity: 1;
+        filter: drop-shadow(0 0 8px #ff0b55);
+      }
+    }
+  </style>
+
+  <!-- Static Passive Infrastructure -->
+  <g fill="none" class="base-path">
+    <!-- Top Primary Node Outline -->
+    <path stroke="#ff0b55" stroke-width="48" opacity="0.3" d="M 436 498 L 512 366 L 588 498 Z" />
+
+    <!-- White / Base Infrastructure Lines -->
+    <g stroke="#f1f1f1" opacity="0.25">
+      <path stroke-width="40" d="M 350 630 L 436 480" />
+      <path stroke-width="40" d="M 674 630 L 588 480" />
+      <line x1="340" y1="630" x2="435" y2="630" stroke-width="20" />
+      <line x1="589" y1="630" x2="684" y2="630" stroke-width="20" />
+
+      <g stroke-width="14">
+        <line x1="512" y1="475" x2="512" y2="585" />
+        <path d="M 500 470 L 524 470" />
+        <path d="M 496 536 C 496 546 528 546 528 556" />
+        <path d="M 405 505 L 452 552 L 486 552 L 486 585" />
+        <path d="M 425 566 L 394 566" />
+        <path d="M 423 605 L 423 630" />
+        <path d="M 619 505 L 572 552 L 538 552 L 538 585" />
+        <path d="M 599 566 L 630 566" />
+        <path d="M 601 605 L 601 630" />
+      </g>
+    </g>
+
+    <!-- Base Terminals -->
+    <line x1="512" y1="440" x2="512" y2="475" stroke="#ff0b55" stroke-width="14" opacity="0.4" />
+  </g>
+
+  <!-- Active Dynamic Signals (Pulsing Dash Arrays) -->
+  <g fill="none" filter="url(#circuit-glow)">
+    <!-- Top Triangle Signal Loop -->
+    <path stroke="#ff0b55" stroke-width="48" class="circuit-signal" d="M 436 498 L 512 366 L 588 498 Z" />
+
+    <!-- Center Spine Signal Downward -->
+    <line x1="512" y1="440" x2="512" y2="585" stroke="#ff3d77" stroke-width="14" class="circuit-signal signal-delay-1" />
+
+    <!-- Left & Right Bus Signals -->
+    <path stroke="#ffffff" stroke-width="14" class="circuit-signal signal-delay-1" d="M 405 505 L 452 552 L 486 552 L 486 585" />
+    <path stroke="#ffffff" stroke-width="14" class="circuit-signal signal-delay-2" d="M 619 505 L 572 552 L 538 552 L 538 585" />
+
+    <path stroke="#ffffff" stroke-width="40" class="circuit-signal signal-reverse" d="M 350 630 L 436 480" />
+    <path stroke="#ffffff" stroke-width="40" class="circuit-signal signal-delay-1" d="M 588 480 L 674 630" />
+  </g>
+
+  <!-- Terminal Nodes with Radial Pulse -->
+  <g fill="#ff0b55" filter="url(#circuit-glow)">
+    <circle cx="512" cy="458" r="9" class="pulse-node" />
+    <circle cx="387" cy="570" r="8" class="pulse-node node-delay-1" />
+    <circle cx="414" cy="595" r="8" class="pulse-node node-delay-2" />
+    <circle cx="613" cy="595" r="8" class="pulse-node node-delay-2" />
+    <circle cx="640" cy="570" r="8" class="pulse-node node-delay-3" />
+  </g>
+</svg>
