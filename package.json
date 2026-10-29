@@ -7,22 +7,21 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "test": "bun test",
     "preview": "vite preview",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "test": "bun test"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^6.5.1",
-    "@tauri-apps/api": "^2.3.0",
-    "@tauri-apps/plugin-dialog": "^2.2.0",
-    "@tauri-apps/plugin-opener": "^2.2.0",
-    "solid-js": "^1.9.4"
+    "@fortawesome/fontawesome-free": "^7.3.1",
+    "@tauri-apps/api": "^2.12.4",
+    "@tauri-apps/plugin-dialog": "^2.8.3",
+    "@tauri-apps/plugin-opener": "^2.7.2",
+    "solid-js": "^1.9.17"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^2.3.1",
-    "@types/bun": "^1.4.3",
-    "typescript": "^5.7.3",
-    "vite": "^6.1.1",
-    "vite-plugin-solid": "^2.11.6"
+    "@tauri-apps/cli": "^2.12.4",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.5",
+    "vite-plugin-solid": "^2.11.14"
   }
 }
