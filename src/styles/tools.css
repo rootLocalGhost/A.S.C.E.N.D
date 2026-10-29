@@ -1,0 +1,570 @@
+/* tools.css — device tools, scrcpy, and remote */
+
+.controls-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+  gap: 15px;
+}
+
+.device-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.card.card-full-width {
+  grid-column: 1 / -1;
+}
+
+.button-grid-4,
+.button-grid-3,
+.button-grid-2 {
+  display: grid;
+  gap: 8px;
+}
+
+.button-grid-4 {
+  grid-template-columns: 1fr 1fr;
+}
+
+.button-grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.button-grid-2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+.button-grid-3 button,
+.button-grid-2 button {
+  padding-left: 9px;
+  padding-right: 9px;
+}
+
+.input-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.dumpsys-controls {
+  display: flex;
+  gap: 8px;
+}
+
+textarea#dumpsys-output {
+  width: 100%;
+  min-height: 190px;
+  max-height: 420px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.55;
+  background: var(--black);
+  white-space: pre;
+}
+
+.toggle-btn.active {
+  background-color: color-mix(in srgb, var(--green) 22%, var(--surface-2));
+  color: var(--white);
+  border-color: color-mix(in srgb, var(--green) 55%, var(--border));
+}
+
+/* Checkbox rows kept for compatibility */
+.custom-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 11px;
+  background: color-mix(in srgb, var(--black) 45%, transparent);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+  user-select: none;
+  font-size: 11.5px;
+}
+
+.custom-checkbox:hover {
+  background: var(--surface-2);
+  border-color: var(--border-strong);
+}
+
+.custom-checkbox input {
+  display: none;
+}
+
+.checkbox-box {
+  display: none;
+}
+
+/* Device tool additions */
+.toggle-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: color-mix(in srgb, var(--black) 40%, transparent);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 11px 13px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.toggle-card:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-2);
+}
+
+.toggle-card > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.toggle-card strong {
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.toggle-card span {
+  font-size: 9.5px;
+  color: var(--muted);
+}
+
+.tool-status-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 8px 10px;
+  background: color-mix(in srgb, var(--black) 40%, transparent);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.current-screen {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 10px;
+  color: var(--muted);
+  padding: 7px 10px;
+  background: color-mix(in srgb, var(--black) 35%, transparent);
+  border: 1px dashed var(--border);
+  border-radius: 7px;
+}
+
+.current-screen strong {
+  color: var(--light-grey);
+  font-family: var(--font-mono);
+  font-weight: 500;
+}
+
+.pair-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.pair-label {
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--muted);
+  width: 100%;
+  font-weight: 600;
+}
+
+.pair-row input {
+  flex: 1;
+  min-width: 90px;
+  padding: 7px 9px;
+  font-size: 11px;
+}
+
+.command-runner {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.command-runner > input {
+  flex: 1;
+  min-width: 220px;
+}
+
+.output-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.output-length {
+  margin-left: auto;
+  font-size: 9.5px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+}
+
+/* Scrcpy */
+.scrcpy-hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px 24px;
+  margin-bottom: 13px;
+  background:
+    radial-gradient(600px 180px at 88% 0%, color-mix(in srgb, var(--red) 12%, transparent), transparent 70%),
+    linear-gradient(180deg, var(--surface), var(--dark-grey));
+  flex-wrap: wrap;
+}
+
+.scrcpy-hero-main {
+  flex: 1;
+  min-width: 280px;
+}
+
+.scrcpy-hero h2 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  letter-spacing: 0.5px;
+  margin-bottom: 5px;
+}
+
+.scrcpy-hero p {
+  color: var(--light-grey);
+  font-size: 11.5px;
+  max-width: 560px;
+  line-height: 1.6;
+}
+
+.scrcpy-status-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 13px;
+}
+
+.scrcpy-status-row .tool-status {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 9.5px;
+}
+
+.scrcpy-launch {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.launch-btn {
+  min-width: 170px;
+}
+
+.scrcpy-presets {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.preset-label {
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--muted);
+  font-weight: 600;
+  margin-right: 3px;
+}
+
+.preset-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--light-grey);
+  padding: 6px 11px;
+  font-size: 10.5px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.preset-btn i {
+  font-size: 9px;
+  color: var(--red);
+}
+
+.preset-btn:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-2);
+  color: var(--white);
+}
+
+.scrcpy-grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.record-path-row {
+  display: flex;
+  gap: 7px;
+}
+
+.record-path-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+.command-preview {
+  margin-top: 15px;
+  background: var(--black);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.command-preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--muted);
+}
+
+.command-preview-header i {
+  color: var(--red);
+  margin-right: 4px;
+}
+
+.command-preview code {
+  display: block;
+  padding: 11px 13px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--green);
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+/* Remote */
+.remote-shell {
+  display: grid;
+  grid-template-columns: minmax(360px, 520px) minmax(220px, 290px);
+  gap: 16px;
+  justify-content: center;
+  align-items: start;
+  max-width: 900px;
+  margin: 6px auto 0;
+}
+
+.remote-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px;
+  background: linear-gradient(180deg, var(--surface), var(--dark-grey));
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+.remote-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.remote-header h2 {
+  font-family: var(--font-display);
+  font-size: 16px;
+  letter-spacing: 0.4px;
+  margin-bottom: 3px;
+}
+
+.remote-header p {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.remote-power-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.remote-dpad-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  max-width: 250px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.remote-standard-btns {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 7px;
+}
+
+.remote-media-btns {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  align-items: center;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.remote-text-input {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+}
+
+.remote-text-input input {
+  flex-grow: 1;
+}
+
+.remote-btn {
+  flex-direction: column;
+  padding: 9px 6px;
+  min-height: 56px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  color: var(--white);
+  font-size: 9.5px;
+  font-weight: 500;
+  gap: 4px;
+  transition: all 0.13s ease;
+}
+
+.remote-btn:hover:not(:disabled) {
+  background: var(--mid-grey);
+  border-color: var(--border-strong);
+  transform: translateY(-1px);
+}
+
+.remote-btn:active:not(:disabled) {
+  transform: scale(0.97);
+  background: var(--border-strong);
+}
+
+.remote-btn i {
+  font-size: 15px;
+  color: var(--light-grey);
+  margin: 0;
+}
+
+.remote-btn:hover i {
+  color: var(--white);
+}
+
+.remote-dpad-grid .remote-btn {
+  aspect-ratio: 1;
+  min-height: 58px;
+}
+
+.remote-btn.power {
+  background: color-mix(in srgb, var(--danger) 18%, var(--surface-2));
+  border-color: color-mix(in srgb, var(--danger) 35%, var(--border));
+}
+
+.remote-btn.power i {
+  color: var(--danger);
+}
+
+#remote-dpad-center,
+#remote-play-pause-btn {
+  background: var(--red);
+  border-color: var(--red-dark);
+}
+
+#remote-dpad-center i,
+#remote-play-pause-btn i {
+  color: #fff;
+}
+
+#remote-dpad-center:hover,
+#remote-play-pause-btn:hover {
+  background: var(--red-dark);
+}
+
+.remote-help {
+  position: sticky;
+  top: 0;
+}
+
+.remote-help .card-content {
+  gap: 0;
+}
+
+.shortcut-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 9px 0;
+}
+
+.remote-help .muted-text {
+  padding-top: 2px;
+}
+
+@media (max-width: 1050px) {
+  .device-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .scrcpy-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .remote-shell {
+    grid-template-columns: 1fr;
+    max-width: 560px;
+  }
+
+  .remote-help {
+    position: static;
+  }
+
+  .scrcpy-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .button-grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .button-grid-2,
+  .input-grid-2,
+  .input-grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .remote-standard-btns {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .remote-media-btns {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
