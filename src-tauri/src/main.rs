@@ -726,14 +726,16 @@ mod tests {
     fn development_project_root_contains_bundled_assets() {
         let project_root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("..");
 
-        let binary = if cfg!(windows) {
-            "bin/adb.exe"
+        let binary_candidates: &[&str] = if cfg!(windows) {
+            &["bin/adb.exe", "bin/adb"]
         } else {
-            "bin/adb"
+            &["bin/adb", "bin/adb.exe"]
         };
 
         assert!(
-            find_asset_in_roots(&[project_root.clone()], binary).is_some(),
+            binary_candidates
+                .iter()
+                .any(|candidate| find_asset_in_roots(&[project_root.clone()], candidate).is_some()),
             "bundled ADB should be discoverable from the project root"
         );
         assert!(
